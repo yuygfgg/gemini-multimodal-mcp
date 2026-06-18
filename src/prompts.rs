@@ -134,8 +134,8 @@ ALL categories below; for any that do not apply, write \"N/A\".
    - Environment cues (outdoor traffic, cafe murmur, room tone,
      wind, etc.) and how steady or changing they are.
 6. Audio quality
-   - Clarity, presence of noise/static/clipping/reverb, stereo vs
-     mono feel. Do NOT guess sample rate or bit depth.
+   - Clarity, presence of noise/static/clipping/reverb. 
+   Do NOT guess sample rate or bit depth.
 7. Notable details a casual listener would miss
 
 Format: markdown with an H3 (###) per category. Use relative temporal
