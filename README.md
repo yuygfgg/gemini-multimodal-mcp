@@ -44,7 +44,7 @@ Add the server to your client's config and restart. You can optionally configure
 
 ```jsonc
 {
-  "mcpServers": {
+  "mcp": {
     "gemini-vision": {
       "type": "local",
       "command": ["/path/to/gemini-multimodal-mcp", "--model", "Gemini 3.5 Flash (Medium)"]
