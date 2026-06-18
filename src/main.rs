@@ -8,70 +8,26 @@ mod server;
 
 use std::process::ExitCode;
 
+use clap::Parser;
 use rmcp::ServiceExt;
 use rmcp::service::QuitReason;
 use rmcp::transport::stdio;
 use server::VisionServer;
 use tokio::runtime::Runtime;
 
+/// MCP server that gives visionless LLMs Gemini's eyes, ears, and video comprehension via `agy` CLI.
+#[derive(Parser)]
+#[command(name = "gemini-multimodal-mcp")]
 struct Args {
-    default_model: Option<String>,
-}
-
-fn parse_args() -> Result<Option<Args>, String> {
-    let mut args_iter = std::env::args().skip(1);
-    let mut default_model = None;
-
-    while let Some(arg) = args_iter.next() {
-        if arg == "-h" || arg == "--help" {
-            print_help();
-            return Ok(None);
-        } else if arg == "-m" || arg == "--model" {
-            if let Some(val) = args_iter.next() {
-                default_model = Some(val);
-            } else {
-                return Err(format!("error: option '{arg}' requires an argument"));
-            }
-        } else if arg.starts_with("--model=") {
-            let val = arg.strip_prefix("--model=").unwrap();
-            default_model = Some(val.to_string());
-        } else if arg.starts_with("-m=") {
-            let val = arg.strip_prefix("-m=").unwrap();
-            default_model = Some(val.to_string());
-        } else {
-            return Err(format!(
-                "error: unknown argument '{arg}'\n\n\
-                 Usage: gemini-multimodal-mcp [OPTIONS]\n\n\
-                 For more information, try '--help'."
-            ));
-        }
-    }
-
-    Ok(Some(Args { default_model }))
-}
-
-fn print_help() {
-    println!(
-        "gemini-multimodal-mcp\n\n\
-         MCP server that gives visionless LLMs Gemini's eyes, ears, and video comprehension via `agy` CLI.\n\n\
-         Usage: gemini-multimodal-mcp [OPTIONS]\n\n\
-         Options:\n\
-           -m, --model <MODEL>              Set default Gemini model to use when not specified in tool calls\n\
-           -h, --help                       Print help information"
-    );
+    /// Set default Gemini model to use when not specified in tool calls
+    #[arg(short, long, value_name = "MODEL")]
+    model: Option<String>,
 }
 
 fn main() -> ExitCode {
-    let args = match parse_args() {
-        Ok(Some(args)) => args,
-        Ok(None) => return ExitCode::SUCCESS,
-        Err(err) => {
-            eprintln!("{err}");
-            return ExitCode::from(1);
-        }
-    };
+    let args = Args::parse();
 
-    if let Some(ref default_model) = args.default_model {
+    if let Some(ref default_model) = args.model {
         let models = models::list_models();
         if !models.is_empty() {
             if let Err(err) = models::validate(&models, default_model) {
@@ -88,7 +44,7 @@ fn main() -> ExitCode {
         }
     };
 
-    match runtime.block_on(serve(args.default_model)) {
+    match runtime.block_on(serve(args.model)) {
         Ok(()) => ExitCode::SUCCESS,
         Err(e) => {
             eprintln!("gemini-multimodal-mcp: {e}");

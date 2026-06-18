@@ -19,6 +19,7 @@ serde = { version = "1", features = ["derive"] }
 schemars = "1"
 url = "2"
 ffmpeg-next = "8.1"
+clap = { version = "4", features = ["derive"] }
 
 [profile.release]
 lto = true
