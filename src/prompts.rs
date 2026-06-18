@@ -202,7 +202,10 @@ fn body_for(modality: Modality) -> &'static str {
 
 fn write_file_ref(out: &mut String, file_ref: &str) {
     let path = file_ref.strip_prefix('@').unwrap_or(file_ref);
-    let _ = writeln!(out, "The file to view (call your file-viewing tool on this exact path): {path}");
+    let _ = writeln!(
+        out,
+        "The file to view (call your file-viewing tool on this exact path): {path}"
+    );
 }
 
 #[cfg(test)]

@@ -456,10 +456,18 @@ mod tests {
     #[test]
     fn resolves_model_successfully_when_provided() {
         let server = VisionServer::new(Some("default-model".to_string()));
-        assert_eq!(server.resolve_model(Some("requested-model")).unwrap(), "requested-model");
+        assert_eq!(
+            server.resolve_model(Some("requested-model")).unwrap(),
+            "requested-model"
+        );
 
         let server_no_default = VisionServer::new(None);
-        assert_eq!(server_no_default.resolve_model(Some("requested-model")).unwrap(), "requested-model");
+        assert_eq!(
+            server_no_default
+                .resolve_model(Some("requested-model"))
+                .unwrap(),
+            "requested-model"
+        );
     }
 
     #[test]

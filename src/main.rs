@@ -97,7 +97,9 @@ fn main() -> ExitCode {
     }
 }
 
-async fn serve(default_model: Option<String>) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
+async fn serve(
+    default_model: Option<String>,
+) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
     let (stdin, stdout) = stdio();
     let service = VisionServer::new(default_model);
     let running = service.serve((stdin, stdout)).await?;
