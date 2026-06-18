@@ -65,6 +65,41 @@ Once connected, your agent gains three tools:
 
 All tools accept local file paths and `data:` URIs. Videos longer than 5 minutes and audio longer than 30 minutes require an explicit confirmation flag to protect your quota.
 
+## Recommended: workflow with `opencode-minimax-easy-vision`
+
+When used with OpenCode and a text-only model, pasting an image into the chat become `this model does not support image input` in the llm's prompt without the full path, so the model is unable to call the MCP tool. The [`opencode-minimax-easy-vision`](https://github.com/devadathanmb/opencode-minimax-easy-vision) plugin fixes this by intercepting pasted images, saving them to a temp file, and instructing the model to call a configured MCP image-analysis tool.
+
+### Setup
+
+1. Install the plugin and set a default model on this server:
+
+   **`opencode.json`**:
+
+   ```jsonc
+   {
+     "$schema": "https://opencode.ai/config.json",
+     "mcp": {
+       "gemini-vision": {
+         "type": "local",
+         "command": ["/path/to/gemini-multimodal-mcp", "--model", "Gemini 3.5 Flash (Medium)"]
+       }
+     },
+     "plugin": ["opencode-minimax-easy-vision"]
+   }
+   ```
+
+2. Create the plugin config to activate it for your text-only model and point it at this server's tool. The tool name follows the `gemini-vision_describe_image` pattern (`<mcp-server-key>_<tool-name>`):
+
+   **`~/.config/opencode/opencode-minimax-easy-vision.jsonc`** (or `.opencode/` for project-level):
+
+   ```jsonc
+   {
+     // Match your provider, e.g. opencode-go/*, z-ai/*, minimax/*, or ["*"] for all
+     "models": ["opencode-go/*"],
+     "imageAnalysisTool": "gemini-vision_describe_image"
+   }
+   ```
+
 ## License
 
 Apache 2.0, see [LICENSE](LICENSE) for details.
